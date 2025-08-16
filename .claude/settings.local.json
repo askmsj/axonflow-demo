@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(move *.vue srccomponents )",
+      "Bash(move wbs-task.ts srctypes)",
+      "Bash(mv:*)",
+      "Bash(rmdir:*)",
+      "Bash(copy:*)",
+      "Bash(cp:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
