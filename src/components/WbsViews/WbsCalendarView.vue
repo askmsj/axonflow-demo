@@ -186,7 +186,7 @@ const editingConfig = {
 }
 
 const filteredTasks = computed(() => {
-  debugger
+  
   let filtered = props.tasks
 
   if (searchText.value) {
@@ -202,7 +202,7 @@ const filteredTasks = computed(() => {
 })
 
 const calendarTasks = computed(() => {
-  debugger
+  
   return filteredTasks.value.map(task => {
     const dateValue = task[dateField.value as keyof WbsTask] as Date
     
@@ -323,7 +323,7 @@ function onTaskCreated(task: WbsTask) {
 
 // Watch for current date changes to update scheduler
 watch(currentDate, (newDate) => {
-  debugger
+  
   if (schedulerRef.value) { 
     schedulerRef.value.instance.option('currentDate', newDate)
   }
