@@ -353,6 +353,7 @@ function onSave() {
   
   emit('taskUpdated', updatedTask)
   hasChanges.value = false
+  emit('close')
 }
 
 function onCancel() {
