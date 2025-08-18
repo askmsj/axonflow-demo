@@ -75,11 +75,20 @@
                 v-model:value="editableTask.progress"
                 :min="0"
                 :max="100"
-                :step="5"
-                :tooltip="{ enabled: true, position: 'top' }"
+                :step="1"
+                :tooltip="{ enabled: true, position: 'top', format: { type: 'percent', precision: 0 } }"
                 @value-changed="(e) => markAsChanged(e)"
               />
-              <span class="progress-value">{{ editableTask.progress }}%</span>
+              <DxNumberBox
+                v-model:value="editableTask.progress"
+                :min="0"
+                :max="100"
+                :step="1"
+                placeholder="0"
+                format="#0'%'"
+                :width="80"
+                @value-changed="(e) => markAsChanged(e)"
+              />
             </div>
           </div>
         </div>
@@ -469,11 +478,12 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
 
-  .progress-value {
-    font-size: 13px;
-    font-weight: 500;
-    color: #495057;
-    min-width: 35px;
+  .dx-slider {
+    flex: 1;
+  }
+
+  .dx-numberbox {
+    flex-shrink: 0;
   }
 }
 
