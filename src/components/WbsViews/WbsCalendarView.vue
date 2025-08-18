@@ -58,93 +58,32 @@
         @appointment-deleted="onAppointmentDeleted"
         @cell-click="onCellClick"
       >
-        <!-- Custom appointment template -->
-        <template #appointmentTemplate="{ appointmentData }">
-          <div class="custom-appointment" :class="getAppointmentClass(appointmentData)">
-            <div class="appointment-header">
-              <span class="appointment-title">{{ appointmentData.name }}</span>
-              <div class="appointment-badges">
-                <span v-if="appointmentData.priority" 
-                      class="priority-badge" 
-                      :class="`priority-${appointmentData.priority.toLowerCase()}`">
-                  {{ appointmentData.priority }}
-                </span>
-                <span v-if="appointmentData.progress !== undefined" 
-                      class="progress-badge">
-                  {{ appointmentData.progress }}%
-                </span>
-              </div>
-            </div>
-            <div v-if="appointmentData.assignee" class="appointment-assignee">
-              <div class="assignee-avatar">{{ getInitials(appointmentData.assignee) }}</div>
-              <span class="assignee-name">{{ appointmentData.assignee }}</span>
-            </div>
-            <div v-if="appointmentData.description" class="appointment-description">
-              {{ appointmentData.description.length > 50 ? 
-                  appointmentData.description.substring(0, 50) + '...' : 
-                  appointmentData.description }}
-            </div>
-          </div>
-        </template>
-
-        <!-- Custom appointment tooltip template -->
-        <template #appointmentTooltipTemplate="{ appointmentData }">
-          <div class="appointment-tooltip">
-            <div class="tooltip-header">
-              <h4>{{ appointmentData.name }}</h4>
-              <span class="task-id">#{{ appointmentData.id }}</span>
-            </div>
-            <div class="tooltip-content">
-              <div v-if="appointmentData.description" class="tooltip-field">
-                <strong>Description:</strong>
-                <p>{{ appointmentData.description }}</p>
-              </div>
-              <div class="tooltip-field">
-                <strong>Status:</strong>
-                <span class="status-badge" :class="`status-${appointmentData.status?.toLowerCase().replace(' ', '-')}`">
-                  {{ appointmentData.status }}
-                </span>
-              </div>
-              <div v-if="appointmentData.assignee" class="tooltip-field">
-                <strong>Assignee:</strong>
-                <span>{{ appointmentData.assignee }}</span>
-              </div>
-              <div v-if="appointmentData.estimatedHours" class="tooltip-field">
-                <strong>Estimated Hours:</strong>
-                <span>{{ appointmentData.estimatedHours }}h</span>
-              </div>
-              <div v-if="appointmentData.progress !== undefined" class="tooltip-field">
-                <strong>Progress:</strong>
-                <div class="progress-container">
-                  <DxProgressBar
-                    :value="appointmentData.progress"
-                    :show-status="false"
-                    :height="12"
-                  />
-                  <span class="progress-text">{{ appointmentData.progress }}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
       </DxScheduler>
+
     </div>
 
     <!-- Task Detail Panel -->
     <DxDrawer
       v-model:opened="showTaskDetail"
-      :width="400"
+      :width="500"
       position="right"
       reveal-mode="slide"
-      open-state-mode="push"
+      open-state-mode="overlap"
+      :close-on-outside-click="true"
+      template="dxTemp"
+      class="calendar-drawer"
     >
-      <TaskDetailPanel
-        v-if="selectedTask"
-        :task="selectedTask"
-        :columns="columns"
-        @task-updated="onTaskUpdated"
-        @close="showTaskDetail = false"
-      />
+    <template #dxTemp>
+      <div class="drawer-content-wrapper">        
+        <TaskDetailPanel
+          v-if="selectedTask"
+          :task="selectedTask"
+          :columns="columns"
+          @task-updated="onTaskUpdated"
+          @close="showTaskDetail = false"
+        /> 
+      </div>
+    </template>
     </DxDrawer>
 
     <!-- Quick Add Task Dialog -->
@@ -171,8 +110,7 @@ import {
   DxSelectBox,
   DxTextBox,
   DxDrawer,
-  DxPopup,
-  DxProgressBar
+  DxPopup
 } from 'devextreme-vue'
 import TaskDetailPanel from './TaskDetailPanel.vue'
 import QuickAddTaskForm from './QuickAddTaskForm.vue'
@@ -248,6 +186,7 @@ const editingConfig = {
 }
 
 const filteredTasks = computed(() => {
+  debugger
   let filtered = props.tasks
 
   if (searchText.value) {
@@ -263,6 +202,7 @@ const filteredTasks = computed(() => {
 })
 
 const calendarTasks = computed(() => {
+  debugger
   return filteredTasks.value.map(task => {
     const dateValue = task[dateField.value as keyof WbsTask] as Date
     
@@ -380,27 +320,11 @@ function onTaskCreated(task: WbsTask) {
   showQuickAdd.value = false
 }
 
-function getAppointmentClass(appointment: any): string {
-  const classes = ['appointment-custom']
-  
-  if (appointment.status) {
-    classes.push(`status-${appointment.status.toLowerCase().replace(' ', '-')}`)
-  }
-  
-  if (appointment.priority) {
-    classes.push(`priority-${appointment.priority.toLowerCase()}`)
-  }
-  
-  return classes.join(' ')
-}
-
-function getInitials(name: string): string {
-  return name.split(' ').map(n => n[0]).join('').toUpperCase()
-}
 
 // Watch for current date changes to update scheduler
 watch(currentDate, (newDate) => {
-  if (schedulerRef.value) {
+  debugger
+  if (schedulerRef.value) { 
     schedulerRef.value.instance.option('currentDate', newDate)
   }
 })
@@ -409,9 +333,10 @@ watch(currentDate, (newDate) => {
 <style scoped lang="scss">
 .wbs-calendar-view {
   height: 100%;
+  position: relative;
+  background: white;
   display: flex;
   flex-direction: column;
-  background: white;
 }
 
 .calendar-header {
@@ -443,208 +368,44 @@ watch(currentDate, (newDate) => {
 }
 
 .calendar-content {
-  //flex: 1;
-  //overflow: hidden;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
   padding: 16px;
 }
 
-.custom-appointment {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  height: 100%;
-  overflow: hidden;
 
-  &.status-completed {
-    background: rgba(40, 167, 69, 0.1);
-    border-left: 3px solid #28a745;
+// Drawer positioning and content styling
+.calendar-drawer {
+  :deep(.dx-drawer-wrapper) {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    height: 100% !important;
+    z-index: 1000 !important;
   }
-
-  &.status-in-progress {
-    background: rgba(0, 123, 255, 0.1);
-    border-left: 3px solid #007bff;
+  
+  :deep(.dx-drawer-panel-content) {
+    width: 500px !important;
+    background: white !important;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15) !important;
+    border-left: 1px solid #e9ecef !important;
   }
-
-  &.status-not-started {
-    background: rgba(108, 117, 125, 0.1);
-    border-left: 3px solid #6c757d;
-  }
-
-  &.status-on-hold {
-    background: rgba(255, 193, 7, 0.1);
-    border-left: 3px solid #ffc107;
-  }
-
-  .appointment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2px;
-
-    .appointment-title {
-      font-weight: 600;
-      color: #2c3e50;
-      line-height: 1.2;
-      flex: 1;
-      margin-right: 4px;
-    }
-
-    .appointment-badges {
-      display: flex;
-      gap: 2px;
-      flex-shrink: 0;
-
-      .priority-badge, .progress-badge {
-        padding: 1px 4px;
-        border-radius: 8px;
-        font-size: 10px;
-        font-weight: 500;
-      }
-
-      .priority-badge {
-        &.priority-high {
-          background: #fd7e14;
-          color: white;
-        }
-
-        &.priority-critical {
-          background: #dc3545;
-          color: white;
-        }
-
-        &.priority-medium {
-          background: #ffc107;
-          color: #212529;
-        }
-
-        &.priority-low {
-          background: #28a745;
-          color: white;
-        }
-      }
-
-      .progress-badge {
-        background: #e9ecef;
-        color: #495057;
-      }
-    }
-  }
-
-  .appointment-assignee {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 2px;
-
-    .assignee-avatar {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #007bff;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 8px;
-      font-weight: 600;
-    }
-
-    .assignee-name {
-      font-size: 10px;
-      color: #6c757d;
-    }
-  }
-
-  .appointment-description {
-    font-size: 10px;
-    color: #6c757d;
-    line-height: 1.2;
+  
+  :deep(.dx-overlay-content) {
+    width: 500px !important;
+    background: white !important;
   }
 }
 
-.appointment-tooltip {
-  max-width: 300px;
-
-  .tooltip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e9ecef;
-
-    h4 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    .task-id {
-      font-size: 12px;
-      color: #6c757d;
-      font-weight: 500;
-    }
-  }
-
-  .tooltip-content {
-    .tooltip-field {
-      margin-bottom: 8px;
-
-      strong {
-        display: block;
-        font-size: 12px;
-        color: #495057;
-        margin-bottom: 2px;
-      }
-
-      p {
-        margin: 0;
-        font-size: 12px;
-        color: #6c757d;
-        line-height: 1.4;
-      }
-
-      .status-badge {
-        display: inline-block;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 10px;
-        font-weight: 500;
-
-        &.status-completed {
-          background: #d4edda;
-          color: #155724;
-        }
-
-        &.status-in-progress {
-          background: #cce7ff;
-          color: #0066cc;
-        }
-
-        &.status-not-started {
-          background: #f8f9fa;
-          color: #6c757d;
-        }
-
-        &.status-on-hold {
-          background: #fff3cd;
-          color: #856404;
-        }
-      }
-
-      .progress-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        .progress-text {
-          font-size: 10px;
-          font-weight: 500;
-          color: #495057;
-        }
-      }
-    }
+.drawer-content-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  
+  .task-detail-panel {
+    width: 100%;
+    height: 100%;
   }
 }
 

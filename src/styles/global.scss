@@ -1,0 +1,204 @@
+// Global Styles Entry Point
+// Import Tailwind base styles
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Import DevExpress theme first
+@import 'devextreme/dist/css/dx.fluent.saas.light.compact.css';
+
+// Import our global styles
+@import './variables';
+@import './responsive';
+@import './layout';
+@import './utilities';
+@import './devextreme-overrides';
+
+// Global base styles
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-primary;
+  background-color: $color-gray-50;
+  color: $color-gray-800;
+  font-size: $font-size-base;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Global typography
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 $spacing-lg 0;
+  font-weight: $font-weight-semibold;
+  line-height: 1.25;
+  color: $color-gray-800;
+}
+
+h1 { font-size: $font-size-xxxl; }
+h2 { font-size: $font-size-xxl; }
+h3 { font-size: $font-size-xl; }
+h4 { font-size: $font-size-lg; }
+h5 { font-size: $font-size-base; }
+h6 { font-size: $font-size-sm; }
+
+@include mobile-only {
+  h1 { font-size: $font-size-xxl; }
+  h2 { font-size: $font-size-xl; }
+  h3 { font-size: $font-size-lg; }
+}
+
+p {
+  margin: 0 0 $spacing-lg 0;
+  line-height: 1.6;
+}
+
+// Global link styles
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  
+  &:hover {
+    color: darken($color-primary, 10%);
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// Global button reset
+button {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// Global form elements
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Better mobile scrolling
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+// Remove focus outline on mouse interaction
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+// Print styles
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  
+  .d-print-none {
+    display: none !important;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  * {
+    border-color: ButtonText !important;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Demo-specific global styles (extracted from App.vue)
+.demo-container {
+  padding: $spacing-xl;
+  max-width: $breakpoint-xl;
+  margin: 0 auto;
+  min-height: 100vh;
+
+  @include mobile-only {
+    padding: $spacing-md;
+  }
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: $spacing-xxl;
+  padding: $spacing-xl;
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-md;
+
+  @include mobile-only {
+    padding: $spacing-lg;
+    margin-bottom: $spacing-xl;
+  }
+
+  h1 {
+    color: $color-gray-800;
+    margin: 0 0 $spacing-md 0;
+    font-size: 2.5rem;
+    font-weight: $font-weight-semibold;
+
+    @include mobile-only {
+      font-size: 2rem;
+    }
+  }
+
+  p {
+    color: $color-gray-500;
+    margin: 0;
+    font-size: $font-size-lg;
+    line-height: 1.5;
+
+    @include mobile-only {
+      font-size: $font-size-base;
+    }
+  }
+}
+
+main {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-lg;
+  min-height: 600px;
+
+  @include mobile-only {
+    padding: $spacing-md;
+    border-radius: $border-radius-md;
+  }
+}

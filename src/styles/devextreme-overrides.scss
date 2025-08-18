@@ -1,0 +1,154 @@
+// DevExpress Global Overrides
+@import './variables';
+
+// Global DevExpress theme customizations
+.dx-theme-fluent-saas-light {
+  --dx-color-primary: #{$color-primary};
+  --dx-color-success: #{$color-success};
+  --dx-color-warning: #{$color-warning};
+  --dx-color-danger: #{$color-danger};
+}
+
+// Button Group responsive improvements
+.dx-buttongroup {
+  @include mobile-only {
+    .dx-button {
+      min-width: 44px; // Touch-friendly size
+      font-size: $font-size-sm;
+      
+      .dx-button-text {
+        display: none; // Hide text on mobile, show icons only
+      }
+    }
+  }
+}
+
+// DataGrid responsive overrides
+.dx-datagrid {
+  @include mobile-only {
+    .dx-datagrid-headers {
+      font-size: $font-size-sm;
+    }
+    
+    .dx-row {
+      font-size: $font-size-sm;
+    }
+    
+    // Hide less important columns on mobile
+    .dx-col-hide-mobile {
+      display: none !important;
+    }
+  }
+}
+
+// Popup responsive overrides
+.dx-popup {
+  @include mobile-only {
+    .dx-popup-content {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+    }
+    
+    .dx-popup-wrapper {
+      padding: 0 !important;
+    }
+  }
+}
+
+// Toolbar responsive improvements
+.dx-toolbar {
+  @include mobile-only {
+    flex-wrap: wrap;
+    
+    .dx-toolbar-items-container {
+      flex-wrap: wrap;
+    }
+    
+    .dx-toolbar-item {
+      margin-bottom: $spacing-sm;
+    }
+    
+    .dx-button {
+      min-width: 44px;
+      
+      .dx-button-text {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// Form responsive overrides
+.dx-form {
+  @include mobile-only {
+    .dx-field-label {
+      font-size: $font-size-sm;
+    }
+    
+    .dx-texteditor {
+      .dx-texteditor-input {
+        font-size: $font-size-base;
+        min-height: 44px; // Touch-friendly
+      }
+    }
+  }
+}
+
+// Scheduler responsive improvements
+.dx-scheduler {
+  @include mobile-only {
+    .dx-scheduler-header {
+      font-size: $font-size-sm;
+    }
+    
+    .dx-scheduler-appointment {
+      font-size: $font-size-xs;
+    }
+  }
+}
+
+// List responsive overrides
+.dx-list {
+  @include mobile-only {
+    .dx-list-item {
+      padding: $spacing-lg $spacing-md;
+      
+      .dx-list-item-content {
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
+
+// Responsive button sizing
+.dx-button {
+  @include mobile-only {
+    min-height: 44px; // Minimum touch target
+    padding: $spacing-md $spacing-lg;
+    
+    &.dx-button-mode-text {
+      min-height: auto;
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+}
+
+// Scrollable improvements for mobile
+.dx-scrollable {
+  @include mobile-only {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+// Loading panel responsive
+.dx-loadpanel {
+  @include mobile-only {
+    .dx-loadpanel-content {
+      min-width: 200px;
+    }
+  }
+}

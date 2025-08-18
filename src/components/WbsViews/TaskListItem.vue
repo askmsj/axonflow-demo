@@ -51,14 +51,14 @@
           icon="edit"
           styling-mode="text"
           title="Edit task"
-          @click.stop="onEditClick"
+          @click="onEditClick"
         />
         <DxButton
           icon="trash"
           styling-mode="text"
           type="danger"
           title="Delete task"
-          @click.stop="onDeleteClick"
+          @click="onDeleteClick"
         />
       </div>
     </div>
@@ -125,11 +125,19 @@ function onTaskClick() {
   emit('taskClicked', props.task)
 }
 
-function onEditClick() {
+function onEditClick(e?: any) {
+  // Prevent event bubbling to parent task click
+  if (e && e.event && e.event.stopPropagation) {
+    e.event.stopPropagation()
+  }
   emit('taskClicked', props.task)
 }
 
-function onDeleteClick() {
+function onDeleteClick(e?: any) {
+  // Prevent event bubbling to parent task click
+  if (e && e.event && e.event.stopPropagation) {
+    e.event.stopPropagation()
+  }
   emit('taskDeleted', props.task.id)
 }
 </script>

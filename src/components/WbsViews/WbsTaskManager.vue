@@ -55,6 +55,7 @@
         v-else-if="currentView === 'kanban'"
         :tasks="tasks"
         :status-column="statusColumn"
+        :columns="allColumns"
         @task-updated="onTaskUpdated"
         @task-deleted="onTaskDeleted"
       />
@@ -187,14 +188,14 @@ async function loadTasks() {
       status: 'Completed',
       priority: 'High',
       assignee: 'John Doe',
-      startDate: new Date('2024-01-15'),
-      dueDate: new Date('2024-01-20'),
+      startDate: new Date('2025-08-15'),
+      dueDate: new Date('2025-08-20'),
       estimatedHours: 16,
       actualHours: 18,
       progress: 100,
       tags: ['backend', 'database'],
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date('2024-01-20')
+      createdAt: new Date('2025-08-10'),
+      updatedAt: new Date('2025-08-20')
     },
     {
       id: 2,
@@ -203,14 +204,14 @@ async function loadTasks() {
       status: 'In Progress',
       priority: 'High',
       assignee: 'Jane Smith',
-      startDate: new Date('2024-01-21'),
-      dueDate: new Date('2024-01-28'),
+      startDate: new Date('2025-08-21'),
+      dueDate: new Date('2025-08-28'),
       estimatedHours: 24,
       actualHours: 12,
       progress: 50,
       tags: ['backend', 'security'],
-      createdAt: new Date('2024-01-15'),
-      updatedAt: new Date('2024-01-25')
+      createdAt: new Date('2025-08-15'),
+      updatedAt: new Date('2025-08-25')
     },
     {
       id: 3,
@@ -219,13 +220,13 @@ async function loadTasks() {
       status: 'Not Started',
       priority: 'Medium',
       assignee: 'Mike Johnson',
-      startDate: new Date('2024-02-01'),
-      dueDate: new Date('2024-02-15'),
+      startDate: new Date('2025-08-01'),
+      dueDate: new Date('2025-08-15'),
       estimatedHours: 32,
       progress: 0,
       tags: ['frontend', 'vue'],
-      createdAt: new Date('2024-01-20'),
-      updatedAt: new Date('2024-01-20')
+      createdAt: new Date('2025-08-20'),
+      updatedAt: new Date('2025-08-20')
     }
   ]
 }

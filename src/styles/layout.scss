@@ -1,0 +1,217 @@
+// Layout Components
+@import './variables';
+@import './responsive';
+
+// Global layout classes that can be used across components
+.layout {
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-lg $spacing-xl;
+    background: $color-white;
+    border-bottom: 1px solid $color-gray-200;
+    box-shadow: $shadow-sm;
+
+    @include mobile-only {
+      flex-direction: column;
+      gap: $spacing-lg;
+      padding: $spacing-lg $spacing-md;
+      text-align: center;
+    }
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xl;
+
+      @include mobile-only {
+        flex-direction: column;
+        gap: $spacing-md;
+        width: 100%;
+      }
+    }
+
+    &-right {
+      display: flex;
+      gap: $spacing-md;
+
+      @include mobile-only {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+
+    &-title {
+      margin: 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-800;
+
+      @include mobile-only {
+        font-size: $font-size-lg;
+      }
+    }
+  }
+
+  &-content {
+    flex: 1;
+    overflow: hidden;
+    padding: $spacing-lg $spacing-xl;
+
+    @include mobile-only {
+      padding: $spacing-md;
+    }
+  }
+
+  &-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: $color-gray-50;
+  }
+}
+
+// Card layout
+.card {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+
+  &-header {
+    padding: $spacing-lg $spacing-xl;
+    border-bottom: 1px solid $color-gray-200;
+    background: $color-white;
+
+    @include mobile-only {
+      padding: $spacing-md;
+    }
+  }
+
+  &-body {
+    padding: $spacing-xl;
+
+    @include mobile-only {
+      padding: $spacing-md;
+    }
+  }
+
+  &-footer {
+    padding: $spacing-lg $spacing-xl;
+    border-top: 1px solid $color-gray-200;
+    background: $color-gray-50;
+
+    @include mobile-only {
+      padding: $spacing-md;
+    }
+  }
+}
+
+// Button groups responsive layout
+.button-group {
+  display: flex;
+  gap: $spacing-md;
+
+  @include mobile-only {
+    flex-direction: column;
+    
+    &.button-group-horizontal-mobile {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+}
+
+// View switcher layout
+.view-switcher {
+  @include mobile-only {
+    width: 100%;
+    
+    .dx-buttongroup {
+      width: 100%;
+      
+      .dx-button {
+        flex: 1;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// Modal/Dialog responsive layout
+.modal {
+  &-responsive {
+    @include mobile-only {
+      .dx-popup-content {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  }
+}
+
+// Sidebar layout
+.sidebar {
+  &-layout {
+    display: flex;
+    height: 100%;
+
+    @include mobile-only {
+      flex-direction: column;
+    }
+  }
+
+  &-main {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &-panel {
+    width: 300px;
+    background: $color-white;
+    border-right: 1px solid $color-gray-200;
+
+    @include mobile-only {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid $color-gray-200;
+    }
+  }
+}
+
+// Responsive table wrapper
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include mobile-only {
+    border-radius: $border-radius-md;
+    
+    table {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Action buttons layout
+.action-buttons {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+
+  @include mobile-only {
+    flex-direction: column;
+    
+    &.action-buttons-row-mobile {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+}

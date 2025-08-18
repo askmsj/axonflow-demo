@@ -86,22 +86,25 @@
     </div>
 
     <!-- Task Detail Panel -->
-    <DxDrawer
-      v-model:opened="showTaskDetail"
-      :width="400"
-      position="right"
-      reveal-mode="slide"
-      open-state-mode="push"
-      class="task-detail-drawer"
+    <DxPopup
+      v-model:visible="showTaskDetail"
+      :width="600"
+      :height="600"
+      :show-close-button="false"
+      :close-on-outside-click="true"
+      css-class="task-detail-popup"
+      :show-title="false"
     >
-      <TaskDetailPanel
-        v-if="selectedTask"
-        :task="selectedTask"
-        :columns="columns"
-        @task-updated="onTaskUpdated"
-        @close="showTaskDetail = false"
-      />
-    </DxDrawer>
+      <div class="popup-content-wrapper">
+        <TaskDetailPanel
+          v-if="selectedTask"
+          :task="selectedTask"
+          :columns="visibleColumns"
+          @task-updated="onTaskUpdated"
+          @close="showTaskDetail = false"
+        />
+      </div>
+    </DxPopup>
   </div>
 </template>
 
@@ -112,7 +115,7 @@ import {
   DxTextBox,
   DxScrollView,
   DxButton,
-  DxDrawer
+  DxPopup
 } from 'devextreme-vue'
 import TaskListItem from './TaskListItem.vue'
 import TaskDetailPanel from './TaskDetailPanel.vue'
@@ -380,10 +383,29 @@ watch(groupedTasks, (newGroups) => {
   background: white;
 }
 
-:deep(.task-detail-drawer) {
-  .dx-drawer-content {
-    background: #f8f9fa;
-    border-left: 1px solid #e9ecef;
+// Task Detail Popup styling
+:deep(.task-detail-popup) {
+  .dx-popup-content {
+    padding: 0 !important;
+    overflow: hidden;
+    height: 600px;
+  }
+  
+  .dx-popup-wrapper {
+    .dx-popup-title {
+      display: none;
+    }
+  }
+}
+
+.popup-content-wrapper {
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  
+  .task-detail-panel {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

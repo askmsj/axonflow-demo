@@ -31,7 +31,7 @@
 
     <!-- Kanban Board -->
     <div class="kanban-board">
-      <DxScrollView direction="horizontal" :show-scrollbar="'onHover'">
+      <div class="kanban-scroll-container">
         <div class="kanban-columns">
           <div
             v-for="column in kanbanColumns"
@@ -64,11 +64,7 @@
 
             <!-- Column Content -->
             <div class="column-content">
-              <DxScrollView
-                direction="vertical"
-                :show-scrollbar="'onHover'"
-                class="column-scroll"
-              >
+              <div class="column-scroll">
                 <div class="task-cards">
                   <KanbanCard
                     v-for="task in column.tasks"
@@ -81,7 +77,7 @@
                     @drag-start="onDragStart"
                   />
                 </div>
-              </DxScrollView>
+              </div>
             </div>
 
             <!-- Add Task Button -->
@@ -105,7 +101,7 @@
             />
           </div>
         </div>
-      </DxScrollView>
+      </div>
     </div>
 
     <!-- Add Column Dialog -->
@@ -137,34 +133,36 @@
     </DxPopup>
 
     <!-- Task Detail Panel -->
-    <DxDrawer
-      v-model:opened="showTaskDetail"
-      :width="400"
-      position="right"
-      reveal-mode="slide"
-      open-state-mode="push"
+    <DxPopup
+      v-model:visible="showTaskDetail"
+      :width="600"
+      :height="600"
+      :show-close-button="false"
+      :close-on-outside-click="true"
+      css-class="task-detail-popup"
+      :show-title="false"
     >
-      <TaskDetailPanel
-        v-if="selectedTask"
-        :task="selectedTask"
-        :columns="columns"
-        @task-updated="onTaskUpdated"
-        @close="showTaskDetail = false"
-      />
-    </DxDrawer>
+      <div class="popup-content-wrapper">
+        <TaskDetailPanel
+          v-if="selectedTask"
+          :task="selectedTask"
+          :columns="props.columns || []"
+          @task-updated="onTaskUpdated"
+          @close="showTaskDetail = false"
+        />
+      </div>
+    </DxPopup>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import {
-  DxScrollView,
   DxSelectBox,
   DxTextBox,
   DxButton,
   DxDropDownButton,
-  DxPopup,
-  DxDrawer
+  DxPopup
 } from 'devextreme-vue'
 import KanbanCard from './KanbanCard.vue'
 import TaskDetailPanel from './TaskDetailPanel.vue'
@@ -173,6 +171,7 @@ import type { WbsTask, TaskColumn } from '@/types/wbs-task'
 interface Props {
   tasks: WbsTask[]
   statusColumn?: TaskColumn
+  columns?: TaskColumn[]
 }
 
 const props = defineProps<Props>()
@@ -365,6 +364,7 @@ function onTaskClicked(task: WbsTask) {
   display: flex;
   flex-direction: column;
   background: #f8f9fa;
+  position: relative;
 }
 
 .kanban-header {
@@ -397,16 +397,23 @@ function onTaskClicked(task: WbsTask) {
 }
 
 .kanban-board {
-/*  //flex: 1;*/
-/*  //overflow: hidden;*/
+  flex: 1;
+  overflow: hidden;
   padding: 16px;
+}
+
+.kanban-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
+  padding-bottom: 16px;
 }
 
 .kanban-columns {
   display: flex;
   gap: 16px;
-  min-height: 100%;
-  padding-bottom: 16px;
+  height: 100%;
+  min-width: max-content;
 }
 
 .kanban-column {
@@ -462,6 +469,7 @@ function onTaskClicked(task: WbsTask) {
 
   .column-scroll {
     height: 100%;
+    overflow-y: auto;
     padding: 8px;
   }
 }
@@ -516,6 +524,32 @@ function onTaskClicked(task: WbsTask) {
     justify-content: flex-end;
     gap: 12px;
     margin-top: 20px;
+  }
+}
+
+// Task Detail Popup styling
+:deep(.task-detail-popup) {
+  .dx-popup-content {
+    padding: 0 !important;
+    overflow: hidden;
+    height: 600px;
+  }
+  
+  .dx-popup-wrapper {
+    .dx-popup-title {
+      display: none;
+    }
+  }
+}
+
+.popup-content-wrapper {
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  
+  .task-detail-panel {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

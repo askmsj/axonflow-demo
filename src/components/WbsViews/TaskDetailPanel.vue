@@ -3,8 +3,8 @@
     <!-- Panel Header -->
     <div class="panel-header">
       <div class="header-content">
-        <h3 class="task-title">{{ task.name }}</h3>
-        <span class="task-id">#{{ task.id }}</span>
+        <h3 class="task-title">{{ task?.name || 'Untitled Task' }}</h3>
+        <span class="task-id">#{{ task?.id || 'N/A' }}</span>
       </div>
       <DxButton
         icon="close"
@@ -25,7 +25,7 @@
             <DxTextBox
               v-model:value="editableTask.name"
               placeholder="Enter task name..."
-              @value-changed="markAsChanged"
+              @value-changed="(e) => markAsChanged(e)"
             />
           </div>
 
@@ -35,7 +35,7 @@
               v-model:value="editableTask.description"
               placeholder="Enter task description..."
               :height="80"
-              @value-changed="markAsChanged"
+              @value-changed="(e) => markAsChanged(e)"
             />
           </div>
         </div>
@@ -52,7 +52,7 @@
                 :data-source="statusOptions"
                 value-expr="value"
                 display-expr="text"
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
             
@@ -63,7 +63,7 @@
                 :data-source="priorityOptions"
                 value-expr="value"
                 display-expr="text"
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
           </div>
@@ -77,7 +77,7 @@
                 :max="100"
                 :step="5"
                 :tooltip="{ enabled: true, position: 'top' }"
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
               <span class="progress-value">{{ editableTask.progress }}%</span>
             </div>
@@ -98,7 +98,7 @@
               placeholder="Select assignee..."
               :search-enabled="true"
               :accept-custom-value="true"
-              @value-changed="markAsChanged"
+              @value-changed="(e) => markAsChanged(e)"
             />
           </div>
         </div>
@@ -114,7 +114,7 @@
                 v-model:value="editableTask.startDate"
                 type="date"
                 placeholder="Select start date..."
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
             
@@ -124,7 +124,7 @@
                 v-model:value="editableTask.dueDate"
                 type="date"
                 placeholder="Select due date..."
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
           </div>
@@ -139,7 +139,7 @@
                 :max="1000"
                 :step="0.5"
                 format="decimal"
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
             
@@ -152,7 +152,7 @@
                 :max="1000"
                 :step="0.5"
                 format="decimal"
-                @value-changed="markAsChanged"
+                @value-changed="(e) => markAsChanged(e)"
               />
             </div>
           </div>
@@ -171,13 +171,13 @@
               :accept-custom-value="true"
               :search-enabled="true"
               :multi-tag="false"
-              @value-changed="markAsChanged"
+              @value-changed="(e) => markAsChanged(e)"
             />
           </div>
         </div>
 
         <!-- Custom Fields Section -->
-        <div v-if="customFields.length > 0" class="detail-section">
+        <div v-if="customFields && customFields.length > 0" class="detail-section">
           <h4 class="section-title">Custom Fields</h4>
           
           <div
@@ -200,17 +200,17 @@
           <div class="metadata-grid">
             <div class="metadata-item">
               <span class="metadata-label">Created:</span>
-              <span class="metadata-value">{{ formatDateTime(task.createdAt) }}</span>
+              <span class="metadata-value">{{ formatDateTime(task?.createdAt) }}</span>
             </div>
             <div class="metadata-item">
               <span class="metadata-label">Updated:</span>
-              <span class="metadata-value">{{ formatDateTime(task.updatedAt) }}</span>
+              <span class="metadata-value">{{ formatDateTime(task?.updatedAt) }}</span>
             </div>
             <div class="metadata-item">
               <span class="metadata-label">Task ID:</span>
-              <span class="metadata-value">#{{ task.id }}</span>
+              <span class="metadata-value">#{{ task?.id || 'N/A' }}</span>
             </div>
-            <div v-if="task.parentId" class="metadata-item">
+            <div v-if="task?.parentId" class="metadata-item">
               <span class="metadata-label">Parent Task:</span>
               <span class="metadata-value">#{{ task.parentId }}</span>
             </div>
@@ -255,10 +255,12 @@ import type { WbsTask, TaskColumn } from '@/types/wbs-task'
 
 interface Props {
   task: WbsTask
-  columns: TaskColumn[]
+  columns?: TaskColumn[]
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  columns: () => []
+})
 
 const emit = defineEmits<{
   taskUpdated: [task: WbsTask]
@@ -299,6 +301,10 @@ const availableTags = ref([
 
 const customFields = computed(() => {
   const systemFields = ['name', 'description', 'status', 'priority', 'assignee', 'startDate', 'dueDate', 'estimatedHours', 'actualHours', 'progress', 'tags', 'id', 'createdAt', 'updatedAt', 'wbsId', 'parentId', 'order']
+  // Ensure props.columns exists and is an array before filtering
+  if (!props.columns || !Array.isArray(props.columns)) {
+    return []
+  }
   return props.columns.filter(col => 
     col.visible && 
     !systemFields.includes(col.id) &&
@@ -306,7 +312,7 @@ const customFields = computed(() => {
   )
 })
 
-function markAsChanged() {
+function markAsChanged(e?: any) {
   hasChanges.value = true
 }
 
@@ -315,14 +321,19 @@ function updateCustomField(fieldId: string, value: any) {
   markAsChanged()
 }
 
-function formatDateTime(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(date))
+function formatDateTime(date: Date | string | undefined): string {
+  if (!date) return 'N/A'
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date(date))
+  } catch (error) {
+    return 'Invalid Date'
+  }
 }
 
 function onSave() {
@@ -366,9 +377,11 @@ onMounted(() => {
 <style scoped lang="scss">
 .task-detail-panel {
   height: 100%;
+  max-height: 600px;
   display: flex;
   flex-direction: column;
   background: white;
+  overflow: hidden;
 }
 
 .panel-header {

@@ -1,0 +1,222 @@
+// Utility Classes
+@import './variables';
+@import './responsive';
+
+// Typography utilities
+.text {
+  &-xs { font-size: $font-size-xs !important; }
+  &-sm { font-size: $font-size-sm !important; }
+  &-base { font-size: $font-size-base !important; }
+  &-lg { font-size: $font-size-lg !important; }
+  &-xl { font-size: $font-size-xl !important; }
+  &-xxl { font-size: $font-size-xxl !important; }
+  &-xxxl { font-size: $font-size-xxxl !important; }
+
+  &-normal { font-weight: $font-weight-normal !important; }
+  &-medium { font-weight: $font-weight-medium !important; }
+  &-semibold { font-weight: $font-weight-semibold !important; }
+  &-bold { font-weight: $font-weight-bold !important; }
+
+  &-primary { color: $color-primary !important; }
+  &-success { color: $color-success !important; }
+  &-warning { color: $color-warning !important; }
+  &-danger { color: $color-danger !important; }
+  &-info { color: $color-info !important; }
+  &-muted { color: $color-gray-500 !important; }
+  &-dark { color: $color-gray-800 !important; }
+  &-light { color: $color-gray-400 !important; }
+}
+
+// Background utilities
+.bg {
+  &-primary { background-color: $color-primary !important; }
+  &-success { background-color: $color-success !important; }
+  &-warning { background-color: $color-warning !important; }
+  &-danger { background-color: $color-danger !important; }
+  &-info { background-color: $color-info !important; }
+  &-white { background-color: $color-white !important; }
+  &-gray-50 { background-color: $color-gray-50 !important; }
+  &-gray-100 { background-color: $color-gray-100 !important; }
+  &-gray-200 { background-color: $color-gray-200 !important; }
+  &-transparent { background-color: transparent !important; }
+}
+
+// Border utilities
+.border {
+  border: 1px solid $color-gray-200 !important;
+  
+  &-0 { border: none !important; }
+  &-top { border-top: 1px solid $color-gray-200 !important; }
+  &-bottom { border-bottom: 1px solid $color-gray-200 !important; }
+  &-left { border-left: 1px solid $color-gray-200 !important; }
+  &-right { border-right: 1px solid $color-gray-200 !important; }
+  
+  &-primary { border-color: $color-primary !important; }
+  &-success { border-color: $color-success !important; }
+  &-warning { border-color: $color-warning !important; }
+  &-danger { border-color: $color-danger !important; }
+}
+
+// Border radius utilities
+.rounded {
+  border-radius: $border-radius-md !important;
+  
+  &-0 { border-radius: 0 !important; }
+  &-sm { border-radius: $border-radius-sm !important; }
+  &-lg { border-radius: $border-radius-lg !important; }
+  &-xl { border-radius: $border-radius-xl !important; }
+  &-full { border-radius: 50% !important; }
+  
+  &-top {
+    border-top-left-radius: $border-radius-md !important;
+    border-top-right-radius: $border-radius-md !important;
+  }
+  
+  &-bottom {
+    border-bottom-left-radius: $border-radius-md !important;
+    border-bottom-right-radius: $border-radius-md !important;
+  }
+}
+
+// Shadow utilities
+.shadow {
+  box-shadow: $shadow-md !important;
+  
+  &-none { box-shadow: none !important; }
+  &-sm { box-shadow: $shadow-sm !important; }
+  &-lg { box-shadow: $shadow-lg !important; }
+  &-xl { box-shadow: $shadow-xl !important; }
+}
+
+// Width and height utilities
+.w {
+  &-100 { width: 100% !important; }
+  &-75 { width: 75% !important; }
+  &-50 { width: 50% !important; }
+  &-25 { width: 25% !important; }
+  &-auto { width: auto !important; }
+}
+
+.h {
+  &-100 { height: 100% !important; }
+  &-75 { height: 75% !important; }
+  &-50 { height: 50% !important; }
+  &-25 { height: 25% !important; }
+  &-auto { height: auto !important; }
+}
+
+.min-h {
+  &-100 { min-height: 100% !important; }
+  &-screen { min-height: 100vh !important; }
+}
+
+.max-w {
+  &-none { max-width: none !important; }
+  &-xs { max-width: 320px !important; }
+  &-sm { max-width: 480px !important; }
+  &-md { max-width: 768px !important; }
+  &-lg { max-width: 992px !important; }
+  &-xl { max-width: 1200px !important; }
+  &-full { max-width: 100% !important; }
+}
+
+// Position utilities
+.position {
+  &-relative { position: relative !important; }
+  &-absolute { position: absolute !important; }
+  &-fixed { position: fixed !important; }
+  &-sticky { position: sticky !important; }
+  &-static { position: static !important; }
+}
+
+// Overflow utilities
+.overflow {
+  &-auto { overflow: auto !important; }
+  &-hidden { overflow: hidden !important; }
+  &-scroll { overflow: scroll !important; }
+  &-visible { overflow: visible !important; }
+  
+  &-x-auto { overflow-x: auto !important; }
+  &-x-hidden { overflow-x: hidden !important; }
+  &-x-scroll { overflow-x: scroll !important; }
+  
+  &-y-auto { overflow-y: auto !important; }
+  &-y-hidden { overflow-y: hidden !important; }
+  &-y-scroll { overflow-y: scroll !important; }
+}
+
+// Cursor utilities
+.cursor {
+  &-pointer { cursor: pointer !important; }
+  &-default { cursor: default !important; }
+  &-not-allowed { cursor: not-allowed !important; }
+  &-wait { cursor: wait !important; }
+}
+
+// User select utilities
+.user-select {
+  &-none { user-select: none !important; }
+  &-auto { user-select: auto !important; }
+  &-all { user-select: all !important; }
+  &-text { user-select: text !important; }
+}
+
+// Responsive display utilities for specific breakpoints
+@include mobile-only {
+  .hidden-mobile { display: none !important; }
+  .visible-mobile { display: block !important; }
+}
+
+@include tablet-up {
+  .hidden-tablet { display: none !important; }
+  .visible-tablet { display: block !important; }
+}
+
+@include desktop-up {
+  .hidden-desktop { display: none !important; }
+  .visible-desktop { display: block !important; }
+}
+
+// Touch-friendly utilities
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Accessibility utilities
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Focus utilities
+.focus-visible {
+  &:focus-visible {
+    outline: 2px solid $color-primary !important;
+    outline-offset: 2px !important;
+  }
+}
+
+// Interactive states
+.interactive {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
