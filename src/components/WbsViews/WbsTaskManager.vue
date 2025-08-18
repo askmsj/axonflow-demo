@@ -136,7 +136,7 @@ const showColumnManager = ref(false)
 const tasks = ref<WbsTask[]>([])
 
 const viewModes = [
-  { value: 'table', text: 'Table', icon: 'table' },
+  { value: 'table', text: 'Table', icon: 'rowfield' },
   { value: 'list', text: 'List', icon: 'bulletlist' },
   { value: 'kanban', text: 'Kanban', icon: 'hierarchy' },
   { value: 'calendar', text: 'Calendar', icon: 'event' }
