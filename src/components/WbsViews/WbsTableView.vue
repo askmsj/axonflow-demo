@@ -160,6 +160,15 @@
         format="dd/MM/yyyy HH:mm"
       />
 
+      <DxColumn
+        data-field="folderId"
+        caption="Folder ID"
+        data-type="number"
+        :width="100"
+        :allow-editing="true"
+        cell-template="folderIdTemplate"
+      />
+
       <!-- Actions Column -->
       <DxColumn
         caption="Actions"
@@ -254,6 +263,14 @@
           :multi-tag="false"
           placeholder="Add tags..."
         />
+      </template>
+
+      <template #folderIdTemplate="{ data }">
+        <div class="folder-id-cell">
+          <span class="folder-id-badge">
+            {{ data.value || 'No Folder' }}
+          </span>
+        </div>
       </template>
 
       <template #actionsTemplate="{ data }">
@@ -593,6 +610,24 @@ function getProgressClass(progress: number): string {
     border-radius: 10px;
     font-size: 11px;
     font-weight: 500;
+  }
+}
+
+.folder-id-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .folder-id-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #e8f4f8;
+    color: #0066cc;
+    text-align: center;
+    min-width: 40px;
   }
 }
 

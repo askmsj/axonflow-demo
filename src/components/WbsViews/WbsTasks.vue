@@ -62,7 +62,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { DxLoadIndicator, DxButton, DxToast } from 'devextreme-vue'
-import WbsTaskManager from '@/components/WbsTaskManager.vue'
+import WbsTaskManager from './WbsTaskManager.vue'
 import { useUserStore } from '@/stores/user-data'
 import apiClient from '@/services/apiClient'
 import type { WbsTask } from '@/types/wbs-task'
