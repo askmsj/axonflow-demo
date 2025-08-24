@@ -1,35 +1,30 @@
 <template>
-  <div class="demo-container">
-    <header class="demo-header">
-      <h1>WBS Task Manager Demo</h1>
-      <p>Interactive task management with multiple view modes - Table, List, Kanban, and Calendar</p>
-    </header>
-    
-    <main>
-      <WbsTaskManager 
-        title="Sample Project Tasks"
-        :wbs-id="1"
-        @task-created="onTaskCreated"
-        @task-updated="onTaskUpdated"
-        @task-deleted="onTaskDeleted"
-      />
-    </main>
+  <div id="app">
+    <MainLayout />
   </div>
 </template>
 
 <script setup>
-import WbsTaskManager from './components/WbsViews/WbsTaskManager.vue'
-
-function onTaskCreated(task) {
-  console.log('Task created:', task)
-}
-
-function onTaskUpdated(task) {
-  console.log('Task updated:', task)
-}
-
-function onTaskDeleted(taskId) {
-  console.log('Task deleted:', taskId)
-}
+import MainLayout from './components/MainLayout.vue'
 </script>
 
+<style>
+#app {
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+</style>

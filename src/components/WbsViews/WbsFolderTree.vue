@@ -68,9 +68,14 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { DxTextBox, DxLoadIndicator, DxButton } from 'devextreme-vue'
 import WbsFolderTreeNode from './WbsFolderTreeNode.vue'
-import folderService from '@/services/folderService'
-import type { FolderTreeNode as FolderTreeNodeType } from '@/services/folderService'
-import type { Folder } from '@/Models/generated/folder'
+import folderService from '../../services/folderService'
+import type { FolderTreeNode as FolderTreeNodeType } from '../../services/folderService'
+interface Folder {
+  id: number
+  name: string
+  description?: string
+  type?: string
+}
 
 interface Props {
   selectedFolderId?: number | null
@@ -131,11 +136,49 @@ async function loadFolders() {
     
     // Static demo data
     folderTree.value = [
+      // Inbox folders as root items (no children)
+      {
+        id: 101,
+        name: 'Private',
+        type: 'inbox',
+        description: 'Personal tasks and notifications',
+        level: 0,
+        hasChildren: false,
+        expanded: false,
+        accessible: true,
+        children: [],
+        badgeCount: 3
+      },
+      {
+        id: 102,
+        name: 'Team',
+        type: 'inbox',
+        description: 'Team collaboration and shared tasks',
+        level: 0,
+        hasChildren: false,
+        expanded: false,
+        accessible: true,
+        children: [],
+        badgeCount: 8
+      },
+      {
+        id: 103,
+        name: 'Workspace',
+        type: 'inbox',
+        description: 'Workspace-wide announcements and updates',
+        level: 0,
+        hasChildren: false,
+        expanded: false,
+        accessible: true,
+        children: [],
+        badgeCount: 2
+      },
+      // Project structure (projects cannot contain other projects)
       {
         id: 1,
-        name: 'Project Alpha',
-        type: 'project',
-        description: 'Main application project',
+        name: 'Folder Alpha',
+        type: 'folder',
+        description: 'Main application folder',
         level: 0,
         hasChildren: true,
         expanded: true,
@@ -144,7 +187,7 @@ async function loadFolders() {
           {
             id: 2,
             name: 'Frontend Development',
-            type: 'folder',
+            type: 'project',
             description: 'UI and client-side components',
             level: 1,
             hasChildren: true,

@@ -13,6 +13,7 @@ export interface FolderTreeNode {
   expanded?: boolean;
   accessible?: boolean;
   children?: FolderTreeNode[];
+  badgeCount?: number;
 }
 
 

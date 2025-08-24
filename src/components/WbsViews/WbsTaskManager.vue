@@ -3,17 +3,8 @@
     <!-- Header with view controls -->
     <div class="manager-header">
       <div class="header-left">
-        <DxButton
-          icon="menu"
-          styling-mode="text"
-          @click="toggleSidebar"
-          class="sidebar-toggle"
-        />
         <div class="title-section">
           <h2>{{ title }}</h2>
-          <div v-if="selectedFolder" class="folder-context">
-            {{ selectedFolder.name }}
-          </div>
         </div>
         <div class="view-switcher">
           <DxButtonGroup
@@ -41,61 +32,44 @@
       </div>
     </div>
 
-    <!-- Main content area with sidebar -->
-    <div class="manager-body">
-      <!-- Folder Tree Sidebar -->
-      <div 
-        class="sidebar" 
-        :class="{ 'sidebar-hidden': !showSidebar }"
-      >
-        <WbsFolderTree
-          :selected-folder-id="selectedFolderId"
-          :include-subfolders="includeSubfolders"
-          @folder-selected="onFolderSelected"
-          @filter-mode-changed="onFilterModeChanged"
-          @clear-selection="clearFolderSelection"
-        />
-      </div>
+    <!-- Main content area -->
+    <div class="manager-content">
+      <!-- Table View -->
+      <WbsTableView
+        v-if="currentView === 'table'"
+        :tasks="filteredTasks"
+        :columns="visibleColumns"
+        @task-updated="onTaskUpdated"
+        @task-deleted="onTaskDeleted"
+      />
 
-      <!-- Main content area -->
-      <div class="manager-content">
-        <!-- Table View -->
-        <WbsTableView
-          v-if="currentView === 'table'"
-          :tasks="filteredTasks"
-          :columns="visibleColumns"
-          @task-updated="onTaskUpdated"
-          @task-deleted="onTaskDeleted"
-        />
+      <!-- List View -->
+      <WbsListView
+        v-else-if="currentView === 'list'"
+        :tasks="filteredTasks"
+        :columns="visibleColumns"
+        @task-updated="onTaskUpdated"
+        @task-deleted="onTaskDeleted"
+      />
 
-        <!-- List View -->
-        <WbsListView
-          v-else-if="currentView === 'list'"
-          :tasks="filteredTasks"
-          :columns="visibleColumns"
-          @task-updated="onTaskUpdated"
-          @task-deleted="onTaskDeleted"
-        />
+      <!-- Kanban View -->
+      <WbsKanbanView
+        v-else-if="currentView === 'kanban'"
+        :tasks="filteredTasks"
+        :status-column="statusColumn"
+        :columns="allColumns"
+        @task-updated="onTaskUpdated"
+        @task-deleted="onTaskDeleted"
+      />
 
-        <!-- Kanban View -->
-        <WbsKanbanView
-          v-else-if="currentView === 'kanban'"
-          :tasks="filteredTasks"
-          :status-column="statusColumn"
-          :columns="allColumns"
-          @task-updated="onTaskUpdated"
-          @task-deleted="onTaskDeleted"
-        />
-
-        <!-- Calendar View -->
-        <WbsCalendarView
-          v-else-if="currentView === 'calendar'"
-          :tasks="filteredTasks"
-          :date-column="dateColumn"
-          @task-updated="onTaskUpdated"
-          @task-deleted="onTaskDeleted"
-        />
-      </div>
+      <!-- Calendar View -->
+      <WbsCalendarView
+        v-else-if="currentView === 'calendar'"
+        :tasks="filteredTasks"
+        :date-column="dateColumn"
+        @task-updated="onTaskUpdated"
+        @task-deleted="onTaskDeleted"
+      />
     </div>
 
     <!-- Add Task Dialog -->
@@ -140,18 +114,20 @@ import WbsKanbanView from './WbsKanbanView.vue'
 import WbsCalendarView from './WbsCalendarView.vue'
 import AddTaskForm from './AddTaskForm.vue'
 import ColumnManager from './ColumnManager.vue'
-import WbsFolderTree from './WbsFolderTree.vue'
 import type { WbsTask, TaskColumn } from '@/types/wbs-task'
-import type { FolderTreeNode } from '@/services/folderService'
 
 interface Props {
   title?: string
   wbsId?: number
+  folderId?: number | null
+  viewMode?: 'table' | 'list' | 'kanban' | 'calendar'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: 'WBS Tasks',
-  wbsId: 0
+  wbsId: 0,
+  folderId: null,
+  viewMode: 'table'
 })
 
 const emit = defineEmits<{
@@ -160,13 +136,9 @@ const emit = defineEmits<{
   taskDeleted: [taskId: number]
 }>()
 
-const currentView = ref<'table' | 'list' | 'kanban' | 'calendar'>('table')
+const currentView = ref<'table' | 'list' | 'kanban' | 'calendar'>(props.viewMode)
 const showAddTaskDialog = ref(false)
 const showColumnManager = ref(false)
-const showSidebar = ref(true)
-const selectedFolderId = ref<number | null>(null)
-const selectedFolder = ref<FolderTreeNode | null>(null)
-const includeSubfolders = ref(true)
 const tasks = ref<WbsTask[]>([])
 
 const viewModes = [
@@ -199,37 +171,12 @@ const visibleColumns = computed(() =>
 )
 
 const filteredTasks = computed(() => {
-  if (!selectedFolder.value) {
+  if (props.folderId === null) {
     return tasks.value
   }
   
-  let targetFolderIds: number[] = []
-  
-  if (includeSubfolders.value) {
-    // Hierarchical filtering: include all child folder IDs recursively  
-    const getAllChildFolderIds = (folder: FolderTreeNode): number[] => {
-      const ids: number[] = []
-      if (folder.id) ids.push(folder.id)
-      
-      if (folder.children) {
-        folder.children.forEach(child => {
-          ids.push(...getAllChildFolderIds(child))
-        })
-      }
-      
-      return ids
-    }
-    
-    targetFolderIds = getAllChildFolderIds(selectedFolder.value)
-    console.log(`Hierarchical filtering for "${selectedFolder.value.name}" + children:`, targetFolderIds)
-  } else {
-    // Strict filtering: only selected folder
-    targetFolderIds = selectedFolder.value.id ? [selectedFolder.value.id] : []
-    console.log(`Strict filtering for "${selectedFolder.value.name}" only:`, targetFolderIds)
-  }
-  
   return tasks.value.filter(task => {
-    return targetFolderIds.includes(task.folderId)
+    return task.folderId === props.folderId
   })
 })
 
@@ -484,24 +431,6 @@ async function loadTasks() {
   ]
 }
 
-function toggleSidebar() {
-  showSidebar.value = !showSidebar.value
-}
-
-function onFolderSelected(folder: FolderTreeNode | null) {
-  selectedFolder.value = folder
-  selectedFolderId.value = folder?.id || null
-}
-
-function clearFolderSelection() {
-  selectedFolder.value = null
-  selectedFolderId.value = null
-  includeSubfolders.value = true // Reset to default
-}
-
-function onFilterModeChanged(newMode: boolean) {
-  includeSubfolders.value = newMode
-}
 
 function onViewChange(e: any) {
   currentView.value = e.addedItems[0]?.value || 'table'
@@ -557,9 +486,6 @@ function onColumnsUpdated(columns: TaskColumn[]) {
     align-items: center;
     gap: 16px;
 
-    .sidebar-toggle {
-      margin-right: 8px;
-    }
 
     .title-section {
       display: flex;
@@ -574,42 +500,12 @@ function onColumnsUpdated(columns: TaskColumn[]) {
         color: #2c3e50;
         line-height: 1.2;
       }
-      
-      .folder-context {
-        font-weight: 400;
-        color: #6c757d;
-        font-size: 14px;
-        margin-top: 2px;
-        line-height: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
   }
 
   .header-right {
     display: flex;
     gap: 12px;
-  }
-}
-
-.manager-body {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-.sidebar {
-  width: 300px;
-  min-width: 250px;
-  max-width: 400px;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  
-  &.sidebar-hidden {
-    width: 0;
-    min-width: 0;
   }
 }
 

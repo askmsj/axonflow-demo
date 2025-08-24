@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^8.0.7",
+    "axios": "^1.11.0",
     "devextreme": "^23.2.0",
     "devextreme-vue": "^23.2.0",
     "mitt": "^3.0.0",

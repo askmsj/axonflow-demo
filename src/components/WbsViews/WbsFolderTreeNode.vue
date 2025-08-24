@@ -3,26 +3,9 @@
     <!-- <div>Debug: node.id = {{node.id}}</div> -->
     <div 
       class="node-content" 
-      :style="{ paddingLeft: `${(node.level || 0) * 20 + 12}px` }"
+      :style="{ paddingLeft: `${calculatePaddingLeft()}px` }"
       @click="onNodeClick"
     >
-      <div class="node-icon">
-        <i 
-          v-if="node.hasChildren"
-          class="expand-icon"
-          :class="{ 'expanded': node.expanded }"
-          @click.stop="toggleExpanded"
-        >
-          ▶
-        </i>
-        <i 
-          v-else
-          class="leaf-icon"
-        >
-          ◦
-        </i>
-      </div>
-      
       <div class="node-type-icon">
         <i :class="getTypeIcon(node.type || 'folder')"></i>
       </div>
@@ -35,8 +18,14 @@
       </div>
       
       <div class="node-actions">
+        <div v-if="node.badgeCount" class="badge-indicator">
+          {{ node.badgeCount }}
+        </div>
         <div v-if="!node.accessible" class="access-indicator" title="Limited access">
           <i class="dx-icon dx-icon-lock"></i>
+        </div>
+        <div v-if="node.hasChildren" class="expand-icon" @click.stop="toggleExpanded">
+          <i :class="{ 'expanded': node.expanded }">▶</i>
         </div>
       </div>
     </div>
@@ -76,6 +65,12 @@ const isSelected = computed(() => {
   return props.selectedFolderId === props.node.id
 })
 
+
+function calculatePaddingLeft(): number {
+  // Standard navigation item padding with indentation for tree levels
+  return (props.node.level || 0) * 16 + 16
+}
+
 function onNodeClick() {
   emit('folderSelected', props.node)
 }
@@ -98,8 +93,18 @@ function onChildFolderExpanded(folderId: number, expanded: boolean) {
 
 function getTypeIcon(type: string): string {
   switch (type.toLowerCase()) {
+    case 'inbox':
+      // Use specific icons based on the node name
+      if (props.node.name.toLowerCase().includes('private')) {
+        return 'dx-icon dx-icon-user'
+      } else if (props.node.name.toLowerCase().includes('team')) {
+        return 'dx-icon dx-icon-group'
+      } else if (props.node.name.toLowerCase().includes('workspace')) {
+        return 'dx-icon dx-icon-home'
+      }
+      return 'dx-icon dx-icon-message'
     case 'project':
-      return 'dx-icon dx-icon-folder'
+      return 'dx-icon dx-icon-box'
     case 'folder':
       return 'dx-icon dx-icon-folder'
     case 'subfolder':
@@ -120,53 +125,50 @@ function getTypeIcon(type: string): string {
 .node-content {
   display: flex;
   align-items: center;
-  padding: 6px 12px 6px 0;
+  padding: 8px 16px 8px 0;
   cursor: pointer;
-  border-radius: 4px;
-  margin: 1px 8px;
   transition: all 0.2s ease;
+  font-size: 14px;
+  color: #495057;
 
   &:hover {
     background-color: #f8f9fa;
+    color: #212529;
   }
 }
 
 .selected .node-content {
   background-color: #e3f2fd;
   color: #1976d2;
+  font-weight: 500;
   
   &:hover {
     background-color: #e3f2fd;
   }
 }
 
-.node-icon {
+.expand-icon {
   width: 16px;
   height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 4px;
-}
-
-.expand-icon {
-  font-size: 10px;
-  color: #666;
-  transition: transform 0.2s ease;
   cursor: pointer;
+  margin-left: 4px;
   
-  &.expanded {
-    transform: rotate(90deg);
+  i {
+    font-size: 10px;
+    color: #666;
+    transition: transform 0.2s ease;
+    
+    &.expanded {
+      transform: rotate(90deg);
+    }
+    
+    &:hover {
+      color: #333;
+    }
   }
-  
-  &:hover {
-    color: #333;
-  }
-}
-
-.leaf-icon {
-  font-size: 8px;
-  color: #ccc;
 }
 
 .node-type-icon {
@@ -208,6 +210,21 @@ function getTypeIcon(type: string): string {
   display: flex;
   align-items: center;
   margin-left: 8px;
+}
+
+.badge-indicator {
+  background: #0078d4;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-right: 4px;
+  min-width: 16px;
+  text-align: center;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .access-indicator {

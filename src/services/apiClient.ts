@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import router from '@/router';
+// import router from '@/router';
 
 const apiClient: AxiosInstance = axios.create({
   //baseURL: 
@@ -12,8 +12,9 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      const returnUrl = encodeURIComponent(router.currentRoute.value.fullPath);
-      window.location.href = `/login?returnUrl=${returnUrl}`;
+      // const returnUrl = encodeURIComponent(router.currentRoute.value.fullPath);
+      // window.location.href = `/login?returnUrl=${returnUrl}`;
+      console.log('401 error - would redirect to login');
     }
     return Promise.reject(error);
   }
@@ -25,8 +26,9 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.withCredentials = true;
 
   //worksapceid
-  const currentRoute = router.currentRoute.value;
-  const workspaceId = Number(currentRoute.params.workspaceId ?? 0);// currentRoute.params.workspaceId as string | undefined;
+  // const currentRoute = router.currentRoute.value;
+  // const workspaceId = Number(currentRoute.params.workspaceId ?? 0);
+  const workspaceId = 1; // Default workspace ID for now
   //if (!workspaceId) return config;
 
   config.headers = config.headers || {};
